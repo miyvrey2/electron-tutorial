@@ -4,6 +4,8 @@ const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
+require('electron-reload')(__dirname);
+
 const path = require('path')
 const url = require('url')
 
@@ -11,31 +13,32 @@ const url = require('url')
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-console.log(app.getPath('desktop'))
-console.log(app.getPath('music'))
-console.log(app.getPath('temp'))
-console.log(app.getPath('userData'))
-
+// Listen for app blur
 app.on('browser-window-blur', function(e) {
   console.log('Window out of focus')
-
 })
-
-app.setBadgeCount(22)
-
 // Listen for app focus
 app.on('browser-window-focus', function(e) {
     console.log('Window in of focus')
 })
+
+// Show badge on toolbar
+app.setBadgeCount(1)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', function(e) {
 
-    console.log("hi there. Welcome!")
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600})
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+        }
+    })
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({
